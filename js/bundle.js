@@ -4703,7 +4703,7 @@ const App = () => {
       };
       const ym = (firstInv.yearMonth || firstInv.months && firstInv.months[0] && firstInv.months[0].yearMonth || '').replace('-', '');
       const origTitle = document.title;
-      document.title = `${ym}_${firstStore.code}_网页引流 請求書兼領収書`;
+      document.title = `${ym}_${firstStore.shortName}_网页引流 請求書兼領収書`;
 
       // React 18: callback removed, use rAF to ensure DOM commit before print
       requestAnimationFrame(() => {
@@ -4731,7 +4731,7 @@ const App = () => {
 
         // Build filename: YYYYMM_店名_网页引流 請求書兼領収書
         const ym = (inv.yearMonth || (hasMonths ? inv.months[0].yearMonth : '')).replace('-', '');
-        const filename = `${ym}_${store.code}_网页引流 請求書兼領収書`;
+        const filename = `${ym}_${store.shortName}_网页引流 請求書兼領収書`;
 
         // Create offscreen container
         const container = document.createElement('div');
