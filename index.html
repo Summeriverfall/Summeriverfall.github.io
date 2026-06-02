@@ -174,22 +174,21 @@ window.onerror = function(msg, url, line) {
 <script src="vendor/react-dom-18.development.js"></script>
 <script src="js/bundle.js?v=2"></script>
 <script>
-setTimeout(function() {
+(function() {
   var el = document.getElementById('root');
   if (!el) return;
-  var html = el.innerHTML;
-  // Check if bundle executed at all
   var checks = [
-    ['typeof COMPANY', typeof COMPANY],
-    ['typeof STORES', typeof STORES],
-    ['typeof Icon', typeof Icon],
-    ['typeof App', typeof App],
-    ['typeof ReactDOM', typeof ReactDOM],
-    ['typeof ReactDOM.render', typeof ReactDOM.render]
+    ['COMPANY', typeof COMPANY],
+    ['STORES', typeof STORES],
+    ['Icon', typeof Icon],
+    ['App', typeof App],
+    ['ReactDOM', typeof ReactDOM],
+    ['render', typeof ReactDOM !== 'undefined' ? typeof ReactDOM.render : 'N/A'],
+    ['root html', el.innerHTML.substring(0, 40)]
   ];
-  var report = checks.map(function(c) { return c[0] + ' = ' + c[1]; }).join('<br>');
-  el.innerHTML = '<div style="padding:40px;font-family:monospace;font-size:13px;">' + report + '<br><br>innerHTML: ' + html.substring(0, 50) + '</div>';
-}, 1000);
+  var report = checks.map(function(c) { return c[0] + ': ' + c[1]; }).join('\\n');
+  el.innerHTML = '<pre style="padding:40px;font-family:monospace;font-size:13px;white-space:pre-wrap;">' + report + '</pre>';
+})();
 </script>
 </body>
 </html>
