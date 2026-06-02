@@ -167,15 +167,36 @@
 <script src="vendor/react-18.development.js"></script>
 <script src="vendor/react-dom-18.development.js"></script>
 <script src="vendor/babel.min.js"></script>
-<script type="text/babel" src="js/icons.jsx?v=13"></script>
-<script type="text/babel" src="js/data.jsx?v=13"></script>
-<script type="text/babel" src="js/common.jsx?v=13"></script>
-<script type="text/babel" src="js/invoice-pdf.jsx?v=13"></script>
-<script type="text/babel" src="js/invoice-editor.jsx?v=13"></script>
-<script type="text/babel" src="js/page-generate.jsx?v=13"></script>
-<script type="text/babel" src="js/page-stores.jsx?v=13"></script>
-<script type="text/babel" src="js/page-history.jsx?v=13"></script>
-<script type="text/babel" src="js/store-detail.jsx?v=13"></script>
-<script type="text/babel" src="js/app.jsx?v=13"></script>
+<script>
+(async function loadApp() {
+  var files = [
+    'js/icons.jsx',
+    'js/data.jsx',
+    'js/common.jsx',
+    'js/invoice-pdf.jsx',
+    'js/invoice-editor.jsx',
+    'js/page-generate.jsx',
+    'js/page-stores.jsx',
+    'js/page-history.jsx',
+    'js/store-detail.jsx',
+    'js/app.jsx'
+  ];
+  var root = document.getElementById('root');
+  try {
+    for (var i = 0; i < files.length; i++) {
+      var resp = await fetch(files[i]);
+      if (!resp.ok) throw new Error('Failed to load ' + files[i] + ': ' + resp.status);
+      var src = await resp.text();
+      var result = Babel.transform(src, { presets: ['react'] });
+      if (!result || !result.code) throw new Error('Babel transform failed for ' + files[i]);
+      // Execute transpiled code in global scope
+      (new Function(result.code)).call(window);
+    }
+  } catch (e) {
+    root.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">Failed to load application: ' + e.message + '</div>';
+    console.error(e);
+  }
+})();
+</script>
 </body>
 </html>
