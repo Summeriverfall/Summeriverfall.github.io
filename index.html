@@ -165,28 +165,37 @@
 <div id="root"><div style="padding:40px;text-align:center;color:#94A3B8;">Loading...</div></div>
 <div id="print-receiver"></div>
 <script>
+// Show any environment info immediately
+(function() {
+  var el = document.getElementById('root');
+  if (el) el.innerHTML = '<div style="padding:40px;font-family:monospace;font-size:14px;">Checking environment...</div>';
+})();
+</script>
+<script>
 window.onerror = function(msg, url, line) {
   var el = document.getElementById('root');
   if (el) el.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">Error: ' + msg + ' (line ' + line + ')</div>';
 };
+window.addEventListener('error', function(e) {
+  var el = document.getElementById('root');
+  if (el && e.target && e.target.tagName === 'SCRIPT') {
+    el.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">Failed to load: ' + (e.target.src || 'inline script') + '</div>';
+  }
+}, true);
 </script>
 <script src="vendor/react-18.development.js"></script>
 <script src="vendor/react-dom-18.development.js"></script>
-<script src="js/bundle.js?v=2"></script>
+<script src="js/bundle.js?v=3"></script>
 <script>
 (function() {
   var el = document.getElementById('root');
   if (!el) return;
-  var checks = [
-    ['COMPANY', typeof COMPANY],
-    ['STORES', typeof STORES],
-    ['Icon', typeof Icon],
-    ['App', typeof App],
-    ['ReactDOM', typeof ReactDOM],
-    ['render', typeof ReactDOM !== 'undefined' ? typeof ReactDOM.render : 'N/A'],
-    ['root html', el.innerHTML.substring(0, 40)]
-  ];
-  var report = checks.map(function(c) { return c[0] + ': ' + c[1]; }).join('\\n');
+  var report = 'COMPANY: ' + typeof COMPANY + '\n' +
+    'STORES: ' + typeof STORES + '\n' +
+    'Icon: ' + typeof Icon + '\n' +
+    'App: ' + typeof App + '\n' +
+    'ReactDOM: ' + typeof ReactDOM + '\n' +
+    'ReactDOM.render: ' + (typeof ReactDOM !== 'undefined' ? typeof ReactDOM.render : 'N/A');
   el.innerHTML = '<pre style="padding:40px;font-family:monospace;font-size:13px;white-space:pre-wrap;">' + report + '</pre>';
 })();
 </script>
