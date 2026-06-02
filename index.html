@@ -164,8 +164,14 @@
 <body>
 <div id="root"><div style="padding:40px;text-align:center;color:#94A3B8;">Loading...</div></div>
 <div id="print-receiver"></div>
+<script>
+window.onerror = function(msg, url, line) {
+  var el = document.getElementById('root');
+  if (el) el.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">Error: ' + msg + ' (line ' + line + ')</div>';
+};
+</script>
 <script src="vendor/react-18.development.js"></script>
 <script src="vendor/react-dom-18.development.js"></script>
-<script src="js/bundle.js"></script>
+<script src="js/bundle.js?v=2"></script>
 </body>
 </html>
