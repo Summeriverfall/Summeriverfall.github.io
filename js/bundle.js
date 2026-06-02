@@ -4696,11 +4696,21 @@ const App = () => {
         }));
       });
       ReactDOM.render(React.createElement('div', null, sheets), receiver);
+      // Set PDF filename via document title
+      const firstInv = invoices[0];
+      const firstStore = currentStores.find(s => s.id === firstInv.storeId) || firstInv.store || {
+        code: '???'
+      };
+      const ym = (firstInv.yearMonth || firstInv.months && firstInv.months[0] && firstInv.months[0].yearMonth || '').replace('-', '');
+      const origTitle = document.title;
+      document.title = `${ym}_${firstStore.code}_网页引流 請求書兼領収書`;
+
       // React 18: callback removed, use rAF to ensure DOM commit before print
       requestAnimationFrame(() => {
         window.print();
         setTimeout(() => {
           ReactDOM.unmountComponentAtNode(receiver);
+          document.title = origTitle;
         }, 2000);
       });
     };
