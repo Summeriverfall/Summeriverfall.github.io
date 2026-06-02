@@ -24,7 +24,7 @@ const InvoicePDF = ({
 
   const totalAmount = monthEntries.reduce((s, m) => s + (m.amount || 0), 0);
   const { exc, tax } = calcTax(totalAmount, taxRate, taxMethod);
-  const issueDateObj = issueDate ? new Date(issueDate) : TODAY;
+  const issueDateObj = new Date();
   const yen = (n) => '¥' + (n || 0).toLocaleString('en-US');
   const num = (n) => (n || 0).toLocaleString('en-US');
   const receiver = receiverName ?? (store ? store.companyName : '');
@@ -82,11 +82,8 @@ const InvoicePDF = ({
             </div>
           </div>
 
-          {/* Row B: month range / 請求日 (right) */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-            <div style={{ fontSize: 14, color: VAR, fontWeight: 500 }}>
-              {nMonths > 1 ? `対象期間：${monthLabel}` : `${monthLabel}分`}
-            </div>
+          {/* Row B: 請求日 (right) */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', marginBottom: 12 }}>
             <div style={{ fontSize: 12, color: VAR, fontWeight: 500 }}>
               請求日：{fmtJpDate(issueDateObj)}
             </div>

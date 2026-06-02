@@ -1035,7 +1035,7 @@ const InvoicePDF = ({
     exc,
     tax
   } = calcTax(totalAmount, taxRate, taxMethod);
-  const issueDateObj = issueDate ? new Date(issueDate) : TODAY;
+  const issueDateObj = new Date();
   const yen = n => '¥' + (n || 0).toLocaleString('en-US');
   const num = n => (n || 0).toLocaleString('en-US');
   const receiver = receiverName ?? (store ? store.companyName : '');
@@ -1117,17 +1117,11 @@ const InvoicePDF = ({
   }, "\u8ACB\u6C42\u66F8No.", invoiceNo)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       alignItems: 'flex-start',
       marginBottom: 12
     }
   }, /*#__PURE__*/React.createElement("div", {
-    style: {
-      fontSize: 14,
-      color: VAR,
-      fontWeight: 500
-    }
-  }, nMonths > 1 ? `対象期間：${monthLabel}` : `${monthLabel}分`), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 12,
       color: VAR,
