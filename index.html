@@ -168,7 +168,7 @@
 <script src="vendor/react-dom-18.development.js"></script>
 <script src="vendor/babel.min.js"></script>
 <script>
-(async function loadApp() {
+(function() {
   var files = [
     'js/icons.jsx',
     'js/data.jsx',
@@ -182,20 +182,43 @@
     'js/app.jsx'
   ];
   var root = document.getElementById('root');
-  try {
-    for (var i = 0; i < files.length; i++) {
-      var resp = await fetch(files[i]);
-      if (!resp.ok) throw new Error('Failed to load ' + files[i] + ': ' + resp.status);
-      var src = await resp.text();
-      var result = Babel.transform(src, { presets: ['react'] });
-      if (!result || !result.code) throw new Error('Babel transform failed for ' + files[i]);
-      // Execute transpiled code in global scope
-      (new Function(result.code)).call(window);
-    }
-  } catch (e) {
-    root.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">Failed to load application: ' + e.message + '</div>';
-    console.error(e);
+  var loaded = 0;
+  var sources = new Array(files.length);
+
+  function fail(msg) {
+    root.innerHTML = '<div style="padding:40px;text-align:center;color:#DC2626;">' + msg + '</div>';
   }
+
+  function tryRun() {
+    if (loaded !== files.length) return;
+    try {
+      var combined = sources.join('\n;');
+      var result = Babel.transform(combined, { presets: ['react'] });
+      if (!result || !result.code) { fail('Babel transform failed'); return; }
+      var s = document.createElement('script');
+      s.textContent = result.code;
+      document.body.appendChild(s);
+    } catch (e) {
+      fail('Error: ' + e.message);
+    }
+  }
+
+  files.forEach(function(f, i) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', f);
+    xhr.onload = function() {
+      if (xhr.status === 200) { sources[i] = xhr.responseText; }
+      else { sources[i] = '/* ' + f + ' failed: ' + xhr.status + ' */'; }
+      loaded++;
+      tryRun();
+    };
+    xhr.onerror = function() {
+      sources[i] = '/* ' + f + ' failed: network error */';
+      loaded++;
+      tryRun();
+    };
+    xhr.send();
+  });
 })();
 </script>
 </body>
