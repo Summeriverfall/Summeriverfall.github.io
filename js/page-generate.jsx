@@ -198,10 +198,10 @@ const PageGenerate = ({ stores, history, onHistoryAdd }) => {
       });
     });
     onHistoryAdd(entries);
-    window.printInvoices(printItems);
+    window.downloadInvoices(printItems);
 
     setRows((rs) => rs.map((r) => valid.some((v) => v.storeId === r.storeId) ? { ...r, status: 'done' } : r));
-    toast.push(`已生成 ${entries.length} 份 PDF — 在打印对话框中选择「另存为 PDF」即可保存`, 'success');
+    toast.push(`已生成 ${entries.length} 份 PDF，正在自动下载到默认文件夹`, 'success');
   };
 
   // Get first and last yearMonth from sorted months for display

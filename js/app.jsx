@@ -111,6 +111,71 @@ const App = () => {
     };
   }, []);
 
+  // ---- PDF direct download (no print dialog) ----
+  React.useEffect(() => {
+    window.downloadInvoices = async (invoices) => {
+      if (!invoices || invoices.length === 0) return;
+      const currentStores = storesRef.current;
+
+      for (let i = 0; i < invoices.length; i++) {
+        const inv = invoices[i];
+        const store = currentStores.find((s) => s.id === inv.storeId) || inv.store || { code: '???', companyName: '' };
+        const hasMonths = inv.months && inv.months.length > 0;
+
+        // Build filename: YYYYMM_店名_网页引流 請求書兼領収書
+        const ym = (inv.yearMonth || (hasMonths ? inv.months[0].yearMonth : '')).replace('-', '');
+        const filename = `${ym}_${store.code}_网页引流 請求書兼領収書`;
+
+        // Create offscreen container
+        const container = document.createElement('div');
+        container.style.cssText = 'position:fixed;left:-9999px;top:0;width:800px;';
+        document.body.appendChild(container);
+
+        // Render invoice
+        const element = React.createElement(InvoicePDF, {
+          store: store,
+          invoiceNo: inv.invoiceNo,
+          issueDate: inv.issueDate,
+          yearMonth: inv.yearMonth,
+          itemName: inv.itemName || (hasMonths ? `業務委託サービス料（${fmtYM_jp(inv.months[0].yearMonth)}）` : `業務委託サービス料（${fmtYM_jp(inv.yearMonth)}）`),
+          amountIncTax: inv.amountIncTax !== undefined ? inv.amountIncTax : (inv.amount || 0),
+          months: inv.months || null,
+          receiverName: inv.receiverName,
+          quantity: inv.quantity || '1式',
+          taxRate: inv.taxRate ?? 0.1,
+          taxMethod: inv.taxMethod || 'round',
+          showSeal: inv.showSeal !== false,
+          variant: inv.variant || 'final',
+        });
+        ReactDOM.render(element, container);
+
+        // Wait for render + images to load
+        await new Promise((r) => setTimeout(r, 600));
+
+        try {
+          const canvas = await html2canvas(container.firstChild, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const imgWidth = 210;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, imgWidth, imgHeight);
+          pdf.save(filename + '.pdf');
+        } catch (e) {
+          console.error('PDF generation failed for ' + filename, e);
+        }
+
+        // Cleanup
+        ReactDOM.unmountComponentAtNode(container);
+        document.body.removeChild(container);
+
+        // Delay between downloads to avoid browser blocking
+        if (i < invoices.length - 1) {
+          await new Promise((r) => setTimeout(r, 500));
+        }
+      }
+    };
+  }, []);
+
   // Add history entries (called by PageGenerate after real print)
   const addHistoryEntries = React.useCallback((entries) => {
     setHistory((prev) => {
