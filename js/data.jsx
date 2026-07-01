@@ -57,7 +57,7 @@ const persistStores = () => saveToLS('invoice_stores', STORES);
 const persistHistory = () => saveToLS('invoice_history', HISTORY);
 
 // ---- helpers ----
-const TODAY = new Date(2026, 4, 9); // 2026-05-09 fixed for prototype determinism
+const TODAY = new Date();
 const fmtYen = (n) => '¥' + (n || 0).toLocaleString('en-US');
 const fmtYM_jp = (ym) => {
   const [y, m] = ym.split('-');

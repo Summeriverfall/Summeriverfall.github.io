@@ -2,8 +2,13 @@
 
 const PageHistory = ({ stores, history }) => {
   const toast = useToast();
-  const [startMonth, setStartMonth] = React.useState('2026-01');
-  const [endMonth, setEndMonth] = React.useState('2026-05');
+  const [startMonth, setStartMonth] = React.useState(() => {
+    const d = new Date(TODAY.getFullYear(), TODAY.getMonth() - 4, 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
+  const [endMonth, setEndMonth] = React.useState(() => {
+    return `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart(2, '0')}`;
+  });
   const [storeFilter, setStoreFilter] = React.useState(stores.map((s) => s.id));
   const [search, setSearch] = React.useState('');
   const [preview, setPreview] = React.useState(null);

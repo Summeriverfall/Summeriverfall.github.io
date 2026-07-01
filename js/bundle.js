@@ -366,7 +366,7 @@ const persistStores = () => saveToLS('invoice_stores', STORES);
 const persistHistory = () => saveToLS('invoice_history', HISTORY);
 
 // ---- helpers ----
-const TODAY = new Date(2026, 4, 9); // 2026-05-09 fixed for prototype determinism
+const TODAY = new Date();
 const fmtYen = n => '¥' + (n || 0).toLocaleString('en-US');
 const fmtYM_jp = ym => {
   const [y, m] = ym.split('-');
@@ -3803,8 +3803,13 @@ const PageHistory = ({
   history
 }) => {
   const toast = useToast();
-  const [startMonth, setStartMonth] = React.useState('2026-01');
-  const [endMonth, setEndMonth] = React.useState('2026-05');
+  const [startMonth, setStartMonth] = React.useState(() => {
+    const d = new Date(TODAY.getFullYear(), TODAY.getMonth() - 4, 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  });
+  const [endMonth, setEndMonth] = React.useState(() => {
+    return `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart(2, '0')}`;
+  });
   const [storeFilter, setStoreFilter] = React.useState(stores.map(s => s.id));
   const [search, setSearch] = React.useState('');
   const [preview, setPreview] = React.useState(null);
