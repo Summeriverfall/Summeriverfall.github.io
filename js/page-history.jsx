@@ -209,7 +209,7 @@ const PageHistory = ({ stores, history }) => {
         initial={editor ? {
           storeId: editor.storeId,
           invoiceNo: editor.invoiceNo,
-          issueDate: editor.issueDate,
+          issueDate: editor.issueDate || todayISO(),
           yearMonth: editor.yearMonth,
           itemName: editor.itemName || `業務委託サービス料（${fmtYM_jp(editor.yearMonth)}）`,
           amount: editor.amountIncTax,

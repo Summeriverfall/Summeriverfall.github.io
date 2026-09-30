@@ -367,6 +367,7 @@ const persistHistory = () => saveToLS('invoice_history', HISTORY);
 
 // ---- helpers ----
 const TODAY = new Date();
+const todayISO = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const fmtYen = n => '¥' + (n || 0).toLocaleString('en-US');
 const fmtYM_jp = ym => {
   const [y, m] = ym.split('-');
@@ -431,6 +432,7 @@ Object.assign(window, {
   persistStores,
   persistHistory,
   TODAY,
+  todayISO,
   TAX_METHODS,
   fmtYen,
   fmtYM_jp,
@@ -1512,6 +1514,7 @@ const InvoiceEditor = ({
         }];
       }
       init.amount = init.months.reduce((s, m) => s + (m.amount || 0), 0);
+      init.issueDate = init.issueDate || todayISO();
       setData(init);
     }
   }, [open, initial]);
@@ -2364,7 +2367,7 @@ const PageGenerate = ({
           const baseName = s.defaultItemName || '業務委託サービス料';
           newRows.push({
             storeId: s.id,
-            issueDate: existing ? existing.issueDate : '2026-05-09',
+            issueDate: existing ? existing.issueDate : todayISO(),
             itemName: existing ? existing.itemName : baseName,
             quantity: existing ? existing.quantity : '1式',
             taxRate: existing ? existing.taxRate : 0.1,
@@ -3030,7 +3033,7 @@ const PageGenerate = ({
     initial: editor ? {
       storeId: editor.storeId,
       invoiceNo: editor.invoiceNo || genInvoiceNo(sortedMonths[0], editor.store?.code || ''),
-      issueDate: editor.issueDate,
+      issueDate: editor.issueDate || todayISO(),
       yearMonth: sortedMonths[0],
       itemName: editor.itemName,
       amount: Object.values(editor.monthsData || {}).reduce((s, m) => s + (m.amount || 0), 0),
@@ -4167,7 +4170,7 @@ const PageHistory = ({
     initial: editor ? {
       storeId: editor.storeId,
       invoiceNo: editor.invoiceNo,
-      issueDate: editor.issueDate,
+      issueDate: editor.issueDate || todayISO(),
       yearMonth: editor.yearMonth,
       itemName: editor.itemName || `業務委託サービス料（${fmtYM_jp(editor.yearMonth)}）`,
       amount: editor.amountIncTax,

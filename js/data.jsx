@@ -58,6 +58,7 @@ const persistHistory = () => saveToLS('invoice_history', HISTORY);
 
 // ---- helpers ----
 const TODAY = new Date();
+const todayISO = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const fmtYen = (n) => '¥' + (n || 0).toLocaleString('en-US');
 const fmtYM_jp = (ym) => {
   const [y, m] = ym.split('-');
@@ -98,4 +99,4 @@ const recentMonths = (n = 24) => {
   return arr;
 };
 
-Object.assign(window, { COMPANY, STORES, HISTORY, DEFAULT_STORES, DEFAULT_HISTORY, persistStores, persistHistory, TODAY, TAX_METHODS, fmtYen, fmtYM_jp, fmtJpDate, fmtJpDateStr, calcTax, genInvoiceNo, lastMonth, recentMonths });
+Object.assign(window, { COMPANY, STORES, HISTORY, DEFAULT_STORES, DEFAULT_HISTORY, persistStores, persistHistory, TODAY, todayISO, TAX_METHODS, fmtYen, fmtYM_jp, fmtJpDate, fmtJpDateStr, calcTax, genInvoiceNo, lastMonth, recentMonths });

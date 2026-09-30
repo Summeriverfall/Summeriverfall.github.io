@@ -47,6 +47,7 @@ const InvoiceEditor = ({ open, onClose, stores, initial, onSave, onGenerate }) =
         init.months = [{ yearMonth: init.yearMonth || lastMonth(), amount: init.amount || 0 }];
       }
       init.amount = init.months.reduce((s, m) => s + (m.amount || 0), 0);
+      init.issueDate = init.issueDate || todayISO();
       setData(init);
     }
   }, [open, initial]);

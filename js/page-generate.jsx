@@ -52,7 +52,7 @@ const PageGenerate = ({ stores, history, onHistoryAdd }) => {
           const baseName = s.defaultItemName || '業務委託サービス料';
           newRows.push({
             storeId: s.id,
-            issueDate: existing ? existing.issueDate : '2026-05-09',
+            issueDate: existing ? existing.issueDate : todayISO(),
             itemName: existing ? existing.itemName : baseName,
             quantity: existing ? existing.quantity : '1式',
             taxRate: existing ? existing.taxRate : 0.1,
@@ -457,7 +457,7 @@ const PageGenerate = ({ stores, history, onHistoryAdd }) => {
         initial={editor ? {
           storeId: editor.storeId,
           invoiceNo: editor.invoiceNo || genInvoiceNo(sortedMonths[0], editor.store?.code || ''),
-          issueDate: editor.issueDate,
+          issueDate: editor.issueDate || todayISO(),
           yearMonth: sortedMonths[0],
           itemName: editor.itemName,
           amount: Object.values(editor.monthsData || {}).reduce((s, m) => s + (m.amount || 0), 0),
