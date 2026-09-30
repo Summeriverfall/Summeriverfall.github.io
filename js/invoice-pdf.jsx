@@ -24,7 +24,14 @@ const InvoicePDF = ({
 
   const totalAmount = monthEntries.reduce((s, m) => s + (m.amount || 0), 0);
   const { exc, tax } = calcTax(totalAmount, taxRate, taxMethod);
-  const issueDateObj = new Date();
+  const parseIssueDate = (value) => {
+    if (!value) return new Date();
+    const m = String(value).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? new Date() : d;
+  };
+  const issueDateObj = parseIssueDate(issueDate);
   const yen = (n) => '¥' + (n || 0).toLocaleString('en-US');
   const num = (n) => (n || 0).toLocaleString('en-US');
   const receiver = receiverName ?? (store ? store.companyName : '');
